@@ -93,6 +93,9 @@ function redhatf() {
 if [ -f /etc/lsb-release ]; then
         . /etc/lsb-release
         DISTRO=$DISTRIB_ID
+        if [ $DISTRO == "Ubuntu" ]; then
+                debianf
+        fi
 elif [ -f /etc/debian_version ]; then
         debianf
 elif [ -f /etc/redhat-release ]; then
