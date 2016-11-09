@@ -6,6 +6,26 @@ XINEDMKFILE=/etc/xinetd.d/check_mk
 XINEDMKFILEREMOTE=xined_check_mk_config
 USERWEB=agents
 PASSWEB=4g3nt5
+GIT=https://raw.githubusercontent.com/lplinux/scripts/master
+
+function pfsense22() {
+        
+        DISTRO=pfsense22
+        FILE=check_mk_agent_pfsense22_sh
+        
+        echo -e "inetd_enable=\"YES\"\ninetd_flags=\"-wW\"" >> /etc/rc.conf.local
+        echo "check_mk        6556/tcp   #check_mk agent" >> /etc/services
+        echo "check_mk        stream  tcp     nowait          root    /usr/local/bin/check_mk_agent check_mk" >> /etc/inetd.conf
+        echo -e "# Allow nagios server to access us\ncheck_mk_agent : $MKIP : allow\ncheck_mk_agent : ALL : deny" >> /etc/hosts.allow
+        echo -e "#\!/bin/sh\n#\n# $FreeBSD$\n#\n\n# PROVIDE: inetd\n# REQUIRE: DAEMON LOGIN cleanvar\n# KEYWORD: shutdown\n\n. /etc/rc.subr\n\nname=\"inetd\"\nrcvar=\"inetd_enable\"\ncommand=\"/usr/sbin/${name}\"\npidfile=\"/var/run/${name}.pid\"\nrequired_files=\"/etc/${name}.conf\"\nextra_commands=\"reload\"\n\nload_rc_config $name\nrun_rc_command \"$1\"" >> /etc/rc.d/inetd
+
+        chmod +x /etc/rc.d/inetd
+        fetch -q $GIT/$FILE -o /usr/local/bin/check_mk_agent
+        chmod +x /usr/local/bin/check_mk_agent
+        
+        service inetd restart
+
+}
 
 function debianf() {
 
@@ -94,6 +114,10 @@ if [ -f /etc/debian_version ]; then
         debianf
 elif [ -f /etc/redhat-release ]; then
         redhatf
+elif [ -f /etc/version ]; then
+        if [ `cat /etc/version | cut -d '.' -f 1,2` == "2.2" ]; then
+            pfsense22
+        fi
 elif [ -f /etc/lsb-release ]; then
         . /etc/lsb-release
         DISTRO=$DISTRIB_ID
