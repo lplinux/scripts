@@ -1,4 +1,4 @@
-    param ([string]$nagiosip), [string]$subnet)
+    param ([string]$nagiosip), ([string]$subnet)
 
 
     $Username = 'agents'
