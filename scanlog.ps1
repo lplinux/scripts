@@ -1,5 +1,5 @@
 $path_to_log="PATH_TO_LOGS"
-$info_age=30
+$info_age=10
 $exitcode = 0
 $statustxtinfo = ""
 $statustxterror = ""
@@ -12,26 +12,16 @@ $info_file = "$path_to_log\" + $now_date + "_info.txt"
 $temp_error_file = "$path_to_log\temp_error.log"
 $temp_info_file = "$path_to_log\temp_info.log"
 
+$last_error_line = Get-Content $error_file | Select-Object -last 1
+$last_info_line = Get-Content $info_file | Select-Object -last 1
 $last_temp_error_line = Get-Content $temp_error_file | Select-Object -last 1
 $last_temp_info_line = Get-Content $temp_info_file | Select-Object -last 1
 
-
-If (test-path $info_file)
-{
-
-$last_info_line = Get-Content $info_file | Select-Object -last 1
+$error_diff = $last_error_line.equals($last_temp_error_line)
 $info_diff = $last_info_line.equals($last_temp_info_line)
 
-        If (test-path $error_file)
-        {
-        $last_error_line = Get-Content $error_file | Select-Object -last 1
-        $error_diff = $last_error_line.equals($last_temp_error_line)
-        }
-        else
-        {
-        $error_diff = $last_temp_error_line
-        }
-
+If ((test-path $error_file) -and (test-path $info_file))
+{
         If ($error_diff -eq $false)
         {
             $statustxterror = "There is a new error on $error_file logfile. Output = $last_error_line"
