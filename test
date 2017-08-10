@@ -1,0 +1,1 @@
+if ((Get-Content .\GetStrings.txt) -join "`n" -match '\$start([\s\S]*)\$end') { $matches[1] }
