@@ -15,7 +15,7 @@ $ocr_log_time_difference_in_minutes = (New-TimeSpan -Start $ocr_log_last_write_t
 If ($ocr_log_time_difference_in_minutes -gt $ocr_log_age)
 {
     
-    $pdf_count = Get-Children $ocr_folder | Measure-Object
+    $pdf_count = Get-ChildItem $ocr_folder | Measure-Object
     
     If ($pdf_count.count -gt 0)
     {
