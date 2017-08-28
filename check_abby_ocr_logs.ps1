@@ -21,7 +21,7 @@ If ($ocr_log_time_difference_in_minutes -gt $ocr_log_age)
     {
         
         $pdf_size = (Get-ChildItem $ocr_folder | Measure-Object -property length -sum) 
-        $ocr_max_running_time = [int]($pdf_size / 10485760)
+        $ocr_max_running_time = [int]($pdf_size.sum / 10485760)
         $ocr_max_running_time = [int]$ocr_max_running_time
         
         If ($ocr_log_time_difference_in_minutes -gt $ocr_max_running_time)
