@@ -26,12 +26,12 @@ If ($ocr_log_time_difference_in_minutes -gt $ocr_log_age)
         
         If ($ocr_log_time_difference_in_minutes -gt $ocr_max_running_time)
         {
-            $statustxtocr = "There is a PDF running for " + $running_time_difference_in_minutes + " minutes. Check the server. " + $statustxtocr + ""
+            $statustxtocr = "There is a PDF running for " + $ocr_log_time_difference_in_minutes + " minutes. Check the server. " + $statustxtocr + ""
             $exitcode = [int]$exitcode + 2
         }
         Else
         {
-            $statustxtocr = "There is a PDF running for " + $running_time_difference_in_minutes + " minutes. Wait a little bit longer. " + $statustxtocr + ""
+            $statustxtocr = "There is a PDF running for " + $ocr_log_time_difference_in_minutes + " minutes. Wait a little bit longer. " + $statustxtocr + ""
             $exitcode = [int]$exitcode + 0
         }
     }
