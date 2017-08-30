@@ -15,12 +15,12 @@ $ocr_log_time_difference_in_minutes = (New-TimeSpan -Start $ocr_log_last_write_t
 If ($ocr_log_time_difference_in_minutes -gt $ocr_log_age)
 {
     
-    $pdf_count = Get-ChildItem $ocr_folder | Measure-Object
+    $pdf_count = Get-ChildItem $ocr_folder -include *.pdf | Measure-Object
     
     If ($pdf_count.count -gt 0)
     {
         
-        $pdf_size = (Get-ChildItem $ocr_folder | Measure-Object -property length -sum) 
+        $pdf_size = (Get-ChildItem $ocr_folder -include *.pdf | Measure-Object -property length -sum) 
         $ocr_max_running_time = [int]($pdf_size.sum / 10485760)
         $ocr_max_running_time = [int]$ocr_max_running_time
         
