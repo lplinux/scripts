@@ -1,48 +1,62 @@
-$path_to_log="PATH_TO_LOGS"
+ $path_to_log="C:\Users\eprensa\Desktop\pnhiq022\log"
 $info_age=10
 $exitcode = 0
-$statustxtinfo = ""
-$statustxterror = ""
 
 # Current timestamp
 $now_date = Get-Date -UFormat "%Y%m%d"
 
 $error_file = "$path_to_log\" + $now_date + "_error.txt"
-$info_file = "$path_to_log\" + $now_date + "_info.txt"
 $temp_error_file = "$path_to_log\temp_error.log"
+
+$info_file = "$path_to_log\" + $now_date + "_info.txt"
 $temp_info_file = "$path_to_log\temp_info.log"
 
-$last_error_line = Get-Content $error_file | Select-Object -last 1
-$last_info_line = Get-Content $info_file | Select-Object -last 1
-$last_temp_error_line = Get-Content $temp_error_file | Select-Object -last 1
-$last_temp_info_line = Get-Content $temp_info_file | Select-Object -last 1
+　
+If ((test-path $error_file))
+{
 
-$error_diff = $last_error_line.equals($last_temp_error_line)
-$info_diff = $last_info_line.equals($last_temp_info_line)
+    $last_error_line = Get-Content $error_file | Select-Object -last 1
+    $last_temp_error_line = Get-Content $temp_error_file | Select-Object -last 1
 
-If ((test-path $error_file) -and (test-path $info_file))
+    $error_diff = $last_error_line.equals($last_temp_error_line)
+
+}
+
+If ((test-path $info_file))
+{
+
+    $last_info_line = Get-Content $info_file | Select-Object -last 1
+    $last_temp_info_line = Get-Content $temp_info_file | Select-Object -last 1
+
+    $info_diff = $last_info_line.equals($last_temp_info_line)
+
+}
+
+　
+If ((test-path $info_file))
 {
         If ($error_diff -eq $false)
         {
-            $statustxterror = "There is a new error on $error_file logfile. Output = $last_error_line"
+            $statustxterror = "There is a new error."
             Write-Output $last_error_line  | Out-File $temp_error_file
             $exitcode = [int]$exitcode + 2
         }
         else
         {
-            $statustxterror = "There are no new errors on $error_file logfile."
+            $statustxterror = "There are no new errors."
             $exitcode = [int]$exitcode + 0
         }
 
-
+　
         $info_last_write_time = [datetime](Get-ItemProperty -Path $info_file -Name LastWriteTime).lastwritetime
         $time = Get-Date
 
         $info_time_difference_in_minutes = (NEW-TIMESPAN -Start $info_last_write_time -End $time).TotalMinutes
-
+        $info_time_difference_in_minutes = [math]::Round($info_time_difference_in_minutes)
+    
         If ($info_time_difference_in_minutes -gt $info_age)
         {
-            $statustxtinfo = "The $info_file logfile had no new logs entry during the last $info_age minutes. Last output = $last_info_line"
+            $statustxtinfo = "The logfile had no new logs entry during the last $info_age minutes."
             $exitcode = [int]$exitcode + 2
         }
 
@@ -70,3 +84,5 @@ else
 }
 
 # end of program
+
+ 
