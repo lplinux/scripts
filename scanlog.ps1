@@ -1,4 +1,4 @@
- $path_to_log="C:\Users\eprensa\Desktop\pnhiq022\log"
+$path_to_log="PATH_TO_LOGS"
 $info_age=10
 $exitcode = 0
 
